@@ -78,22 +78,8 @@ int main(int argc, char** argv){
 /* Add your run time analysis for part 3 of the assignment here as commented block*/
 
 bool parseLine(string &line, string &movieName, double &movieRating) {
-    if (line.length() <= 0) return false;
-    string tempRating = "";
-
-    bool flag = false;
-    movieName = tempRating = "", movieRating = 0.0, flag = false;
-
-    for (int i = 0; i < line.length(); i++){
-        if(flag) tempRating += line[i];
-        else if(line[i]==','&& line[0]!='"') flag = true;
-        else {
-            if(i==0 && line[0]=='"') continue;
-            if(line[i]=='"'){ i++; flag=true; continue;}
-            movieName += line[i];
-        }
-    }
-    
-    movieRating = stod(tempRating);
+    int commaIndex = line.find_last_of(",");
+    movieName = line.substr(0, commaIndex);
+    movieRating = stod(line.substr(commaIndex+1));
     return true;
 }
