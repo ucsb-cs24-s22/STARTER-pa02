@@ -19,7 +19,7 @@ bool parseLine(string &line, string &movieName, double &movieRating);
 int main(int argc, char** argv){
     if (argc < 2){
         cerr << "Not enough arguments provided (need at least 1 argument)." << endl;
-        cerr << "Usage: " << argv[ 0 ] << " filename prefix1 prefix2 ... prefix n " << endl;
+        cerr << "Usage: " << argv[ 0 ] << " moviesFilename prefixFilename " << endl;
         exit(1);
     }
 
@@ -81,5 +81,8 @@ bool parseLine(string &line, string &movieName, double &movieRating) {
     int commaIndex = line.find_last_of(",");
     movieName = line.substr(0, commaIndex);
     movieRating = stod(line.substr(commaIndex+1));
+    if (movieName[0] == '\"') {
+        movieName = movieName.substr(1, movieName.length() - 2);
+    }
     return true;
 }
