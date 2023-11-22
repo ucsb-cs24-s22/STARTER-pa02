@@ -19,7 +19,7 @@ bool parseLine(string &line, string &movieName, double &movieRating);
 int main(int argc, char** argv){
     if (argc < 2){
         cerr << "Not enough arguments provided (need at least 1 argument)." << endl;
-        cerr << "Usage: " << argv[ 0 ] << " filename prefix1 prefix2 ... prefix n " << endl;
+        cerr << "Usage: " << argv[ 0 ] << " moviesFilename prefixFilename " << endl;
         exit(1);
     }
 
@@ -30,56 +30,59 @@ int main(int argc, char** argv){
         exit(1);
     }
   
-  // Create an object of a STL data-structure to store all the movies
+    // Create an object of a STL data-structure to store all the movies
 
-  string line, movieName;
-  double movieRating;
-  // Read each file and store the name and rating
-  while (getline (movieFile, line) && parseLine(line, movieName, movieRating)){
-        // Use std::string movieName and double movieRating
-        // to construct your Movie objects
-        // cout << movieName << " has rating " << movieRating << endl;
-        // insert elements into your data structure
-  }
+    string line, movieName;
+    double movieRating;
+    // Read each file and store the name and rating
+    while (getline (movieFile, line) && parseLine(line, movieName, movieRating)){
+            // Use std::string movieName and double movieRating
+            // to construct your Movie objects
+            // cout << movieName << " has rating " << movieRating << endl;
+            // insert elements into your data structure
+    }
 
-  movieFile.close();
+    movieFile.close();
 
-  if (argc == 2){
-        //print all the movies in ascending alphabetical order of movie names
-        return 0;
-  }
+    if (argc == 2){
+            //print all the movies in ascending alphabetical order of movie names
+            return 0;
+    }
 
-  //  For each prefix,
-  //  Find all movies that have that prefix and store them in an appropriate data structure
-  //  If no movie with that prefix exists print the following message
-  cout << "No movies found with prefix "<<"<replace with prefix>" << endl << endl;
+    ifstream prefixFile (argv[2]);
 
-  //  For each prefix,
-  //  Print the highest rated movie with that prefix if it exists.
-  cout << "Best movie with prefix " << "<replace with prefix>" << " is: " << "replace with movie name" << " with rating " << std::fixed << std::setprecision(1) << "replace with movie rating" << endl;
+    if (prefixFile.fail()) {
+        cerr << "Could not open file " << argv[2];
+        exit(1);
+    }
 
-  return 0;
+    vector<string> prefixes;
+    while (getline (prefixFile, line)) {
+        if (!line.empty()) {
+            prefixes.push_back(line);
+        }
+    }
+
+    //  For each prefix,
+    //  Find all movies that have that prefix and store them in an appropriate data structure
+    //  If no movie with that prefix exists print the following message
+    cout << "No movies found with prefix "<<"<replace with prefix>" << endl << endl;
+
+    //  For each prefix,
+    //  Print the highest rated movie with that prefix if it exists.
+    cout << "Best movie with prefix " << "<replace with prefix>" << " is: " << "replace with movie name" << " with rating " << std::fixed << std::setprecision(1) << "replace with movie rating" << endl;
+
+    return 0;
 }
 
 /* Add your run time analysis for part 3 of the assignment here as commented block*/
 
 bool parseLine(string &line, string &movieName, double &movieRating) {
-    if (line.length() <= 0) return false;
-    string tempRating = "";
-
-    bool flag = false;
-    movieName = tempRating = "", movieRating = 0.0, flag = false;
-
-    for (int i = 0; i < line.length(); i++){
-        if(flag) tempRating += line[i];
-        else if(line[i]==','&& line[0]!='"') flag = true;
-        else {
-            if(i==0 && line[0]=='"') continue;
-            if(line[i]=='"'){ i++; flag=true; continue;}
-            movieName += line[i];
-        }
+    int commaIndex = line.find_last_of(",");
+    movieName = line.substr(0, commaIndex);
+    movieRating = stod(line.substr(commaIndex+1));
+    if (movieName[0] == '\"') {
+        movieName = movieName.substr(1, movieName.length() - 2);
     }
-    
-    movieRating = stod(tempRating);
     return true;
 }
